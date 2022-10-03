@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Registry_Manager.UI"
+             xmlns:local="clr-namespace:Registry_Manager.UI" 
+             xmlns:local1="clr-namespace:Registry_Manager.UI.Models"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
@@ -18,11 +19,11 @@
                 </DockPanel>
                 <ListBox x:Name="recordsList" Width="200" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="340" SelectionChanged="recordsList_SelectionChanged">
                 <ListBox.DataContext>
-                    <local:RegistryRecord/>
+                        <local1:RMRecord/>
                 </ListBox.DataContext>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text ="{Binding Title}"></TextBlock>
+                        <TextBlock Text ="{Binding Name}"></TextBlock>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
@@ -38,13 +39,13 @@
                 </DockPanel>
                 <ListView x:Name="registryKeysList"  Margin="5" Width="610" UseLayoutRounding="False">
                     <ListBox.DataContext>
-                        <local:RegistryRecord/>
+                        <local1:RMParameter/>
                     </ListBox.DataContext>
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Key}" Width="200"/>
+                            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="200"/>
                             <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Type}" Width="100"/>
-                            <GridViewColumn Header="Data" DisplayMemberBinding="{Binding Value}" Width="300"/>
+                            <GridViewColumn Header="Data" DisplayMemberBinding="{Binding Data}" Width="300"/>
                         </GridView>
                     </ListView.View>
                 </ListView>

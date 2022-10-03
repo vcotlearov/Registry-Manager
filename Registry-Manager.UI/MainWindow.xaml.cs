@@ -1,17 +1,9 @@
-﻿using System;
+﻿using Registry_Manager.UI.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Registry_Manager.UI
 {
@@ -20,9 +12,97 @@ namespace Registry_Manager.UI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Dictionary<int, string> randomizer = new Dictionary<int, string>()
+        {
+            {1, "diamond" },
+            {2, "fishing" },
+            {3, "winner" },
+            {4, "idea" },
+            {5, "audience" },
+            {6, "revenue" },
+            {7, "article" },
+            {8, "explanation" },
+            {9, "marketing" },
+            {10, "insect" },
+            {11, "departure" },
+            {12, "data" },
+            {13, "way" },
+            {14, "administration" },
+            {15, "power" },
+            {16, "world" },
+            {17, "grandmother" },
+            {18, "signature" },
+            {19, "charity" },
+            {20, "wood" },
+        };
         private List<TabItem> _tabItems;
         private TabItem _tabAdd;
         private string addTabHeader =  "+";
+
+        public RMConfig rmConfig = null;
+
+        private void OpenConfig()
+        {
+
+            rmConfig = new RMConfig();
+            RMTemplate rMTemplate = new RMTemplate();
+            for (int i = 0; i < 3; i++)
+            {
+                RMParameter rmTemplateParameter = new RMParameter();
+                rmTemplateParameter.Name = $"Name {i}";
+                rmTemplateParameter.Type = $"Type {i}";
+                rmTemplateParameter.Data = $"Data {i}";
+                rMTemplate.Parameters.Add(rmTemplateParameter);
+            }
+            rmConfig.Templates.Add(rMTemplate);
+
+            Random r = new Random();
+            int tabCounter = r.Next(2, 5);
+            for (int j = 0; j < tabCounter; j++)
+            {
+                RMGroup rMGroup = new RMGroup();
+                rMGroup.Name = $"Group {j}";
+                int recordCounter = r.Next(3, 20);
+                for (int x = 1; x <= recordCounter; x++)
+                {
+                    RMRecord rMRecord = new RMRecord();
+                    rMRecord.Name = randomizer[r.Next(1, 20)];
+                    rMRecord.TemplateName = rMTemplate.Name;
+
+                    int paramCounter = r.Next(1, 6);
+                    for (int y = 0; y < paramCounter; y++)
+                    {
+                        RMParameter rMParameter = new RMParameter();
+                        rMParameter.Name = $"Param {y}";
+                        rMParameter.Type = $"Type {y}";
+                        rMParameter.Data = $"Data {y}";
+                        rMRecord.Parameters.Add(rMParameter);
+                    }
+
+                    rMGroup.Records.Add(rMRecord);
+                }
+                rmConfig.Groups.Add(rMGroup);
+            }
+
+            _tabItems = new List<TabItem>();
+
+            // add a tabItem with + in header 
+            TabItem tabAdd = new TabItem();
+            tabAdd.Header = addTabHeader;
+
+            _tabItems.Add(tabAdd);
+
+            foreach(var group in rmConfig.Groups)
+            {
+                this.AddTabItem(group);
+            }
+
+            // bind tab control
+            tabDynamic.DataContext = _tabItems;
+
+            tabDynamic.SelectedIndex = 0;
+        }
+
         public MainWindow()
         {
 
@@ -39,13 +119,17 @@ namespace Registry_Manager.UI
 
                 _tabItems.Add(tabAdd);
 
+                RMGroup group = new RMGroup();
+                group.Name = "Group";
                 // add first tab
-                this.AddTabItem();
+                this.AddTabItem(group);
 
                 // bind tab control
                 tabDynamic.DataContext = _tabItems;
 
                 tabDynamic.SelectedIndex = 0;
+
+                OpenConfig();
             }
             catch (Exception ex)
             {
@@ -53,19 +137,20 @@ namespace Registry_Manager.UI
             }
         }
 
-        private TabItem AddTabItem()
+        private TabItem AddTabItem(RMGroup group)
         {
             int count = _tabItems.Count;
 
             // create new tab item
             TabItem tab = new TabItem();
-            tab.Header = string.Format("Tab {0}", count);
+            tab.Header = group.Name;
             tab.Name = string.Format("tab{0}", count);
             tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
             // add controls to tab item, this case I added just a text box
 
             RecordSelection recordSelection = new RecordSelection();
+            recordSelection.Populate(group.Records);
             tab.Content = recordSelection;
 
             // insert tab item right before the last (+) tab item
@@ -84,8 +169,11 @@ namespace Registry_Manager.UI
                     // clear tab control binding
                     tabDynamic.DataContext = null;
 
+
                     // add new tab
-                    TabItem newTab = this.AddTabItem();
+                    RMGroup group = new RMGroup();
+                    group.Name = "New Group";
+                    TabItem newTab = this.AddTabItem(group);
 
                     // bind tab control
                     tabDynamic.DataContext = _tabItems;
