@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Microsoft.Win32;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace Registry_Manager.UI
 {
@@ -41,68 +44,6 @@ namespace Registry_Manager.UI
 
         public RMConfig rmConfig = null;
 
-        private void OpenConfig()
-        {
-
-            rmConfig = new RMConfig();
-            RMTemplate rMTemplate = new RMTemplate();
-            for (int i = 0; i < 3; i++)
-            {
-                RMParameter rmTemplateParameter = new RMParameter();
-                rmTemplateParameter.Name = $"Name {i}";
-                rmTemplateParameter.Type = $"Type {i}";
-                rmTemplateParameter.Data = $"Data {i}";
-                rMTemplate.Parameters.Add(rmTemplateParameter);
-            }
-            rmConfig.Templates.Add(rMTemplate);
-
-            Random r = new Random();
-            int tabCounter = r.Next(2, 5);
-            for (int j = 0; j < tabCounter; j++)
-            {
-                RMGroup rMGroup = new RMGroup();
-                rMGroup.Name = $"Group {j}";
-                int recordCounter = r.Next(3, 20);
-                for (int x = 1; x <= recordCounter; x++)
-                {
-                    RMRecord rMRecord = new RMRecord();
-                    rMRecord.Name = randomizer[r.Next(1, 20)];
-                    rMRecord.TemplateName = rMTemplate.Name;
-
-                    int paramCounter = r.Next(1, 6);
-                    for (int y = 0; y < paramCounter; y++)
-                    {
-                        RMParameter rMParameter = new RMParameter();
-                        rMParameter.Name = $"Param {y}";
-                        rMParameter.Type = $"Type {y}";
-                        rMParameter.Data = $"Data {y}";
-                        rMRecord.Parameters.Add(rMParameter);
-                    }
-
-                    rMGroup.Records.Add(rMRecord);
-                }
-                rmConfig.Groups.Add(rMGroup);
-            }
-
-            _tabItems = new List<TabItem>();
-
-            // add a tabItem with + in header 
-            TabItem tabAdd = new TabItem();
-            tabAdd.Header = addTabHeader;
-
-            _tabItems.Add(tabAdd);
-
-            foreach(var group in rmConfig.Groups)
-            {
-                this.AddTabItem(group);
-            }
-
-            // bind tab control
-            tabDynamic.DataContext = _tabItems;
-
-            tabDynamic.SelectedIndex = 0;
-        }
-
         public MainWindow()
         {
 
@@ -116,7 +57,6 @@ namespace Registry_Manager.UI
                 // add a tabItem with + in header 
                 TabItem tabAdd = new TabItem();
                 tabAdd.Header = addTabHeader;
-
                 _tabItems.Add(tabAdd);
 
                 RMGroup group = new RMGroup();
@@ -126,10 +66,7 @@ namespace Registry_Manager.UI
 
                 // bind tab control
                 tabDynamic.DataContext = _tabItems;
-
                 tabDynamic.SelectedIndex = 0;
-
-                OpenConfig();
             }
             catch (Exception ex)
             {
@@ -139,23 +76,28 @@ namespace Registry_Manager.UI
 
         private TabItem AddTabItem(RMGroup group)
         {
-            int count = _tabItems.Count;
+            try
+            {
+                int count = _tabItems.Count;
 
-            // create new tab item
-            TabItem tab = new TabItem();
-            tab.Header = group.Name;
-            tab.Name = string.Format("tab{0}", count);
-            tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
+                // create new tab item
+                TabItem tab = new TabItem();
+                tab.Header = group.Name;
+                tab.Name = string.Format("tab{0}", count);
+                tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
-            // add controls to tab item, this case I added just a text box
+                RecordSelection recordSelection = new RecordSelection();
+                recordSelection.Populate(group.Records);
+                tab.Content = recordSelection;
 
-            RecordSelection recordSelection = new RecordSelection();
-            recordSelection.Populate(group.Records);
-            tab.Content = recordSelection;
-
-            // insert tab item right before the last (+) tab item
-            _tabItems.Insert(count - 1, tab);
-            return tab;
+                // insert tab item right before the last (+) tab item
+                _tabItems.Insert(count - 1, tab);
+                return tab;
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
         }
 
         private void tabDynamic_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -228,10 +170,51 @@ namespace Registry_Manager.UI
             }
         }
 
-
         private void OnExit_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void OpenConfig_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "JSON file (*.json)|*.json";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                var jsonConfig = File.ReadAllText(openFileDialog.FileName);
+                var config = JsonConvert.DeserializeObject<RMConfig>(jsonConfig);
+
+                ImportConfig(config);
+            }
+        }
+
+        private void ImportConfig(RMConfig config)
+        {
+            _tabItems = new List<TabItem>();
+
+            // add a tabItem with + in header 
+            TabItem tabAdd = new TabItem();
+            tabAdd.Header = addTabHeader;
+            _tabItems.Add(tabAdd);
+
+            foreach (var group in config.Groups)
+            {
+                this.AddTabItem(group);
+            }
+
+            // bind tab control
+            tabDynamic.DataContext = _tabItems;
+            tabDynamic.SelectedIndex = 0;
+        }
+
+        private void SaveAsConfig_Click(object sender, RoutedEventArgs e)
+        {
+            var jsonConfig = JsonConvert.SerializeObject(rmConfig);
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "JSON file (*.json)|*.json";
+            if (saveFileDialog.ShowDialog() == true)
+                File.WriteAllText(saveFileDialog.FileName, jsonConfig);
         }
     }
 }

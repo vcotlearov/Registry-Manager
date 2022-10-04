@@ -11,9 +11,9 @@
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_Main" Padding="5">
                     <MenuItem Header="_New" InputGestureText="Ctrl+N" IsEnabled="False"/>
-                    <MenuItem Header="_Open"  InputGestureText="Ctrl+O"/>
+                    <MenuItem Header="_Open"  InputGestureText="Ctrl+O" Click="OpenConfig_Click"/>
                     <MenuItem Header="_Save" InputGestureText="Ctrl+S"/>
-                    <MenuItem Header="_Save As" InputGestureText="Ctrl+Shift+S"/>
+                    <MenuItem Header="_Save As" InputGestureText="Ctrl+Shift+S" Click="SaveAsConfig_Click"/>
                     <MenuItem Header="_Exit" Click="OnExit_Click" InputGestureText="Alt+F4" />
                 </MenuItem>
             </Menu>
