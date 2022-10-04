@@ -10,7 +10,7 @@
         <DockPanel LastChildFill="False">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_Main" Padding="5">
-                    <MenuItem Header="_New" InputGestureText="Ctrl+N" IsEnabled="False"/>
+                    <MenuItem Header="_New" InputGestureText="Ctrl+N" Click="NewConfig_Click"/>
                     <MenuItem Header="_Open"  InputGestureText="Ctrl+O" Click="OpenConfig_Click"/>
                     <MenuItem Header="_Save" InputGestureText="Ctrl+S"/>
                     <MenuItem Header="_Save As" InputGestureText="Ctrl+Shift+S" Click="SaveAsConfig_Click"/>

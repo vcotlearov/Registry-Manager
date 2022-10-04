@@ -51,27 +51,37 @@ namespace Registry_Manager.UI
             {
                 InitializeComponent();
 
-                // initialize tabItem array
-                _tabItems = new List<TabItem>();
-
-                // add a tabItem with + in header 
-                TabItem tabAdd = new TabItem();
-                tabAdd.Header = addTabHeader;
-                _tabItems.Add(tabAdd);
-
-                RMGroup group = new RMGroup();
-                group.Name = "Group";
-                // add first tab
-                this.AddTabItem(group);
-
-                // bind tab control
-                tabDynamic.DataContext = _tabItems;
-                tabDynamic.SelectedIndex = 0;
+                InitializeDefaultConfig();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void InitializeDefaultConfig()
+        {
+            // initialize tabItem array
+            _tabItems = new List<TabItem>();
+
+            InitializeAddTab();
+
+            RMGroup group = new RMGroup();
+            group.Name = "Group";
+            // add first tab
+            this.AddTabItem(group);
+
+            // bind tab control
+            tabDynamic.DataContext = _tabItems;
+            tabDynamic.SelectedIndex = 0;
+        }
+
+        private void InitializeAddTab()
+        {
+            // add a tabItem with + in header 
+            TabItem tabAdd = new TabItem();
+            tabAdd.Header = addTabHeader;
+            _tabItems.Add(tabAdd);
         }
 
         private TabItem AddTabItem(RMGroup group)
@@ -89,7 +99,6 @@ namespace Registry_Manager.UI
                 RecordSelection recordSelection = new RecordSelection();
                 recordSelection.Populate(group.Records);
                 tab.Content = recordSelection;
-
                 // insert tab item right before the last (+) tab item
                 _tabItems.Insert(count - 1, tab);
                 return tab;
@@ -170,11 +179,12 @@ namespace Registry_Manager.UI
             }
         }
 
-        private void OnExit_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
+     
 
+        private void NewConfig_Click(object sender, RoutedEventArgs e)
+        {
+            InitializeDefaultConfig();
+        }
         private void OpenConfig_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -192,10 +202,7 @@ namespace Registry_Manager.UI
         {
             _tabItems = new List<TabItem>();
 
-            // add a tabItem with + in header 
-            TabItem tabAdd = new TabItem();
-            tabAdd.Header = addTabHeader;
-            _tabItems.Add(tabAdd);
+            InitializeAddTab();
 
             foreach (var group in config.Groups)
             {
@@ -215,6 +222,11 @@ namespace Registry_Manager.UI
             saveFileDialog.Filter = "JSON file (*.json)|*.json";
             if (saveFileDialog.ShowDialog() == true)
                 File.WriteAllText(saveFileDialog.FileName, jsonConfig);
+        }
+
+        private void OnExit_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }
