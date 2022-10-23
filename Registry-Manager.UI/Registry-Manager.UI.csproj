@@ -8,7 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="delete-icon-white.png" />
     <None Remove="delete-icon.png" />
+    <None Remove="exit-icon.png" />
+    <None Remove="minimize-icon.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,7 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="delete-icon.png" />
+    <Resource Include="Images\delete-icon-white.png" />
+    <Resource Include="Images\delete-icon.png" />
+    <Resource Include="Images\exit-icon.png" />
+    <Resource Include="Images\minimize-icon.png" />
   </ItemGroup>
 
 </Project>

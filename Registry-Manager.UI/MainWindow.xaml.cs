@@ -7,6 +7,8 @@ using System.Windows.Controls;
 using Microsoft.Win32;
 using System.IO;
 using Newtonsoft.Json;
+using System.Windows.Media;
+using System.Windows.Input;
 
 namespace Registry_Manager.UI
 {
@@ -42,7 +44,7 @@ namespace Registry_Manager.UI
         private TabItem _tabAdd;
         private string addTabHeader =  "+";
 
-        public RMConfig rmConfig = null;
+        public static RMConfig rmConfig;
 
         public MainWindow()
         {
@@ -50,6 +52,8 @@ namespace Registry_Manager.UI
             try
             {
                 InitializeComponent();
+
+                this.DataContext = this;
 
                 InitializeDefaultConfig();
             }
@@ -61,19 +65,15 @@ namespace Registry_Manager.UI
 
         private void InitializeDefaultConfig()
         {
-            // initialize tabItem array
-            _tabItems = new List<TabItem>();
-
-            InitializeAddTab();
-
             RMGroup group = new RMGroup();
             group.Name = "Group";
+            
             // add first tab
-            this.AddTabItem(group);
+            var config = new RMConfig();
+            config.Name = "My Config";
+            config.Groups.Add(group);
 
-            // bind tab control
-            tabDynamic.DataContext = _tabItems;
-            tabDynamic.SelectedIndex = 0;
+            ImportConfig(config);
         }
 
         private void InitializeAddTab()
@@ -81,6 +81,9 @@ namespace Registry_Manager.UI
             // add a tabItem with + in header 
             TabItem tabAdd = new TabItem();
             tabAdd.Header = addTabHeader;
+            var bc = new BrushConverter();
+            tabAdd.Foreground = (Brush)bc.ConvertFrom("#F1F1F1");
+            tabAdd.Width = 40;
             _tabItems.Add(tabAdd);
         }
 
@@ -93,7 +96,7 @@ namespace Registry_Manager.UI
                 // create new tab item
                 TabItem tab = new TabItem();
                 tab.Header = group.Name;
-                tab.Name = string.Format("tab{0}", count);
+                tab.Name = string.Format("Group{0}", count);
                 tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
                 RecordSelection recordSelection = new RecordSelection();
@@ -123,7 +126,9 @@ namespace Registry_Manager.UI
 
                     // add new tab
                     RMGroup group = new RMGroup();
-                    group.Name = "New Group";
+                    group.Name = "Group " + rmConfig.Groups.Where(x=> x.Name.StartsWith("Group")).Count();
+                    rmConfig.Groups.Add(group);
+
                     TabItem newTab = this.AddTabItem(group);
 
                     // bind tab control
@@ -135,6 +140,33 @@ namespace Registry_Manager.UI
                 else
                 {
                     // your code here...
+                }
+            }
+        }
+
+        private void tabDynamicRename(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem item)
+            {
+                RenameGroupTab modalWindow = new RenameGroupTab();
+                modalWindow.Owner = Application.Current.MainWindow;
+                modalWindow.Left = modalWindow.Owner.Left + modalWindow.Owner.Width / 3;
+                modalWindow.Top = modalWindow.Owner.Top + modalWindow.Owner.Height / 2;
+                var contextMenu = item.Parent as ContextMenu;
+                var tebItem = contextMenu.PlacementTarget as TextBlock;
+                RenameGroupTab.groupName = tebItem.Text;
+                modalWindow.ShowDialog();
+
+                string valueFromModalTextBox = RenameGroupTab.groupName;
+
+                var dContext = item.DataContext;
+                var groupTitle = dContext.ToString();
+                var rmGroup = rmConfig.Groups.SingleOrDefault(x => x.Name == groupTitle);
+                if (rmGroup != null && !string.IsNullOrEmpty(valueFromModalTextBox))
+                {
+                    rmGroup.Name = valueFromModalTextBox;
+                    _tabItems.SingleOrDefault(x => x.Header.ToString() == groupTitle).Header = valueFromModalTextBox;
+
                 }
             }
         }
@@ -212,6 +244,14 @@ namespace Registry_Manager.UI
             // bind tab control
             tabDynamic.DataContext = _tabItems;
             tabDynamic.SelectedIndex = 0;
+
+            rmConfig = config;
+
+            if(!string.IsNullOrEmpty(config.Name))
+            {
+                Title = "Registry Manager - " + config.Name;
+            }
+            
         }
 
         private void SaveAsConfig_Click(object sender, RoutedEventArgs e)
@@ -227,6 +267,12 @@ namespace Registry_Manager.UI
         private void OnExit_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                this.DragMove();
         }
     }
 }
