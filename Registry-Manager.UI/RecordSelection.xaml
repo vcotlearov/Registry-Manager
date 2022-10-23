@@ -8,9 +8,9 @@
              xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d" 
              Name="recSelection"
-             d:DesignHeight="450" d:DesignWidth="1000" Background="#1E1E1E" DataContext="this">
+             d:DesignHeight="450" d:DesignWidth="1000" Background="#1E1E1E" d:DataContext="this">
     <UserControl.Resources>
-        <CollectionViewSource x:Key='src' Source="{Binding registryRecords, Mode=TwoWay, BindsDirectlyToSource=True}">
+        <CollectionViewSource x:Key="src" x:Name="myCollectionViewSources" Source="{Binding Path=registryRecords, Mode=TwoWay, BindsDirectlyToSource=True}" >
             <CollectionViewSource.SortDescriptions>
                 <scm:SortDescription PropertyName="Name" />
             </CollectionViewSource.SortDescriptions>
@@ -18,7 +18,7 @@
     </UserControl.Resources>
     <Grid>
         <DockPanel LastChildFill="False">
-            <StackPanel Orientation="Vertical" Margin="0 0 20 0" DataContext="{StaticResource src}">
+            <StackPanel Orientation="Vertical" Margin="0 0 20 0">
                 <DockPanel Width="200">
                     <TextBlock Text="Records:" Foreground="{StaticResource LightDarkTextBrush}" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="5"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right">
@@ -26,7 +26,7 @@
                         <Button x:Name="removeRecord" Style="{StaticResource NoBorderMenuDarkButtonSmall}" Content="Remove" Margin="0 5" Click="RemoveRegistryKey"></Button>
                     </StackPanel>
                 </DockPanel>
-                <ListBox x:Name="recordsList" Style="{StaticResource DarkListBox}"  ItemsSource="{Binding}" BorderThickness="0 2 2 0" Width="200" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="340" SelectionChanged="recordsList_SelectionChanged">
+                <ListBox x:Name="recordsList" Style="{StaticResource DarkListBox}"  ItemsSource="{Binding Source={StaticResource src}}" BorderThickness="0 2 2 0" Width="200" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="340" SelectionChanged="recordsList_SelectionChanged">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text ="{Binding Name, Mode=TwoWay}"></TextBlock>
