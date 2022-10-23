@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace Registry_Manager.UI.Models
 {
-    public class RMGroup : INotifyPropertyChanged
+    public class RMKey : INotifyPropertyChanged
     {
         private string _name;
         public string Name
@@ -23,12 +22,27 @@ namespace Registry_Manager.UI.Models
                 }
             }
         }
-
-        public ObservableCollection<RMKey> Records { get; set; }
-
-        public RMGroup()
+        private string _templateName;
+        public string TemplateName
         {
-            Records = new ObservableCollection<RMKey>();
+            get
+            {
+                return this._templateName;
+            }
+            set
+            {
+                if (value != this._templateName)
+                {
+                    this._templateName = value;
+                    NotifyPropertyChanged("TemplateName");
+                }
+            }
+        }
+        public List<RMValue> Parameters { get; set; }
+
+        public RMKey()
+        {
+            Parameters = new List<RMValue>();
         }
 
         protected void NotifyPropertyChanged(String propertyName)

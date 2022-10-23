@@ -256,7 +256,7 @@ namespace Registry_Manager.UI
 
         private void SaveAsConfig_Click(object sender, RoutedEventArgs e)
         {
-            var jsonConfig = JsonConvert.SerializeObject(rmConfig);
+            var jsonConfig = JsonConvert.SerializeObject(rmConfig, Formatting.Indented);
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "JSON file (*.json)|*.json";

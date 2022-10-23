@@ -5,29 +5,35 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Registry_Manager.UI" 
              xmlns:local1="clr-namespace:Registry_Manager.UI.Models"
+             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" Background="#1E1E1E">
+             Name="recSelection"
+             d:DesignHeight="450" d:DesignWidth="1000" Background="#1E1E1E" DataContext="this">
+    <UserControl.Resources>
+        <CollectionViewSource x:Key='src' Source="{Binding registryRecords, Mode=TwoWay, BindsDirectlyToSource=True}">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Name" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+    </UserControl.Resources>
     <Grid>
         <DockPanel LastChildFill="False">
-            <StackPanel Orientation="Vertical" Margin="0 0 20 0">
+            <StackPanel Orientation="Vertical" Margin="0 0 20 0" DataContext="{StaticResource src}">
                 <DockPanel Width="200">
                     <TextBlock Text="Records:" Foreground="{StaticResource LightDarkTextBrush}" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="5"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right">
-                        <Button x:Name="addRecord" Style="{StaticResource NoBorderMenuDarkButtonSmall}" Content="Add" Margin="0 5"></Button>
-                        <Button x:Name="removeRecord" Style="{StaticResource NoBorderMenuDarkButtonSmall}" Content="Remove" Margin="0 5"></Button>
+                        <Button x:Name="addRecord" Style="{StaticResource NoBorderMenuDarkButtonSmall}" Content="Add" Margin="0 5" Click="AddRegistryKey"></Button>
+                        <Button x:Name="removeRecord" Style="{StaticResource NoBorderMenuDarkButtonSmall}" Content="Remove" Margin="0 5" Click="RemoveRegistryKey"></Button>
                     </StackPanel>
                 </DockPanel>
-                <ListBox x:Name="recordsList" Style="{StaticResource DarkListBox}" BorderThickness="0 2 2 0" Width="200" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="340" SelectionChanged="recordsList_SelectionChanged">
-                <ListBox.DataContext>
-                        <local1:RMRecord/>
-                </ListBox.DataContext>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text ="{Binding Name}"></TextBlock>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-                </StackPanel>
+                <ListBox x:Name="recordsList" Style="{StaticResource DarkListBox}"  ItemsSource="{Binding}" BorderThickness="0 2 2 0" Width="200" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="340" SelectionChanged="recordsList_SelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text ="{Binding Name, Mode=TwoWay}"></TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
             <StackPanel Orientation="Vertical">
                 <DockPanel Margin="5 25 0 5"  Width="610" HorizontalAlignment="Left">
                     <TextBlock Text="Parameters:" Foreground="{StaticResource LightDarkTextBrush}" DockPanel.Dock="Left" VerticalAlignment="Bottom" />
@@ -35,7 +41,7 @@
                 </DockPanel>
                 <ListView x:Name="registryKeysList" Style="{StaticResource DarkListBox}" Margin="5" Width="620" UseLayoutRounding="False" ItemContainerStyle="{StaticResource DarkListViewItem}">
                     <ListBox.DataContext>
-                        <local1:RMParameter/>
+                        <local1:RMValue/>
                     </ListBox.DataContext>
                     <ListView.View>
                         <GridView>
