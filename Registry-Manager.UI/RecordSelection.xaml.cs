@@ -12,19 +12,19 @@ namespace Registry_Manager.UI
     /// </summary>
     public partial class RecordSelection : UserControl
     {
-        public ObservableCollection<RMKey> registryRecords { get; set; }
+        public ObservableCollection<RMKey> RegistryRecords { get; set; }
         public RMKey selectedRecord;
         public RecordSelection()
         {
             InitializeComponent();
 
             this.DataContext = this;
-            registryRecords = new ObservableCollection<RMKey>();
+            RegistryRecords = new ObservableCollection<RMKey>();
         }
 
         public void Populate(ObservableCollection<RMKey> records)
         {
-            registryRecords = records;
+            RegistryRecords = records;
             if (records.Count > 0)
             {
                 registryKeysList.SelectedItem = records[0];
@@ -50,10 +50,10 @@ namespace Registry_Manager.UI
 
             string valueFromModalTextBox = ManageRegistryKey.RegKeyName;
 
-            var rmKey = registryRecords.SingleOrDefault(x => x.Name == valueFromModalTextBox);
+            var rmKey = RegistryRecords.SingleOrDefault(x => x.Name == valueFromModalTextBox);
             if (rmKey == null && !string.IsNullOrEmpty(valueFromModalTextBox))
             {
-                registryRecords.Add(new RMKey() { Name = valueFromModalTextBox });
+                RegistryRecords.Add(new RMKey() { Name = valueFromModalTextBox });
                 ManageRegistryKey.RegKeyName = string.Empty;
             }
         }
@@ -62,9 +62,33 @@ namespace Registry_Manager.UI
         {
             if (selectedRecord != null)
             {
-                registryRecords.Remove(selectedRecord);
+                RegistryRecords.Remove(selectedRecord);
             }
         }
 
+        private void RenameRegistryKey(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem item)
+            {
+                RenameRegistryKeyWindow modalWindow = new RenameRegistryKeyWindow();
+                modalWindow.Owner = Application.Current.MainWindow;
+                modalWindow.Left = modalWindow.Owner.Left + modalWindow.Owner.Width / 3;
+                modalWindow.Top = modalWindow.Owner.Top + modalWindow.Owner.Height / 2;
+                var contextMenu = item.Parent as ContextMenu;
+                var tebItem = contextMenu.PlacementTarget as TextBlock;
+                RenameRegistryKeyWindow.RegistryKey = tebItem.Text;
+                modalWindow.ShowDialog();
+
+                string valueFromModalTextBox = RenameRegistryKeyWindow.RegistryKey;
+
+                var dContext = (RMKey)item.DataContext;
+                var groupTitle = dContext.Name;
+                var rmKey = RegistryRecords.SingleOrDefault(x => x.Name == groupTitle);
+                if (rmKey != null && !string.IsNullOrEmpty(valueFromModalTextBox))
+                {
+                    rmKey.Name = valueFromModalTextBox;
+                }
+            }
+        }
     }
 }

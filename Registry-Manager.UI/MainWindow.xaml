@@ -42,7 +42,6 @@
                         </DockPanel>
                     </DataTemplate>
                 </TabControl.Resources>
-
             </TabControl>
         </DockPanel>
     </Grid>

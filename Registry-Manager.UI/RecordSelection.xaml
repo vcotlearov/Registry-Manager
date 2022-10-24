@@ -10,7 +10,7 @@
              Name="recSelection"
              d:DesignHeight="450" d:DesignWidth="1000" Background="#1E1E1E" d:DataContext="this">
     <UserControl.Resources>
-        <CollectionViewSource x:Key="src" x:Name="myCollectionViewSources" Source="{Binding Path=registryRecords, Mode=TwoWay, BindsDirectlyToSource=True}" >
+        <CollectionViewSource x:Key="src" x:Name="myCollectionViewSources" Source="{Binding Path=RegistryRecords, Mode=TwoWay, BindsDirectlyToSource=False}" >
             <CollectionViewSource.SortDescriptions>
                 <scm:SortDescription PropertyName="Name" />
             </CollectionViewSource.SortDescriptions>
@@ -29,7 +29,13 @@
                 <ListBox x:Name="recordsList" Style="{StaticResource DarkListBox}"  ItemsSource="{Binding Source={StaticResource src}}" BorderThickness="0 2 2 0" Width="200" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="340" SelectionChanged="recordsList_SelectionChanged">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text ="{Binding Name, Mode=TwoWay}"></TextBlock>
+                            <TextBlock Text ="{Binding Name, Mode=TwoWay}">
+                                <TextBlock.ContextMenu>
+                                    <ContextMenu Placement="Right" StaysOpen="true" Padding="0" Margin="0" BorderThickness="0">
+                                        <MenuItem Padding="0" Margin="0" Header="Rename" Click="RenameRegistryKey" Style="{StaticResource DarkMenuItem}"/>
+                                    </ContextMenu>
+                                </TextBlock.ContextMenu>
+                            </TextBlock>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
