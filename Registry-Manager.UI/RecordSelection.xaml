@@ -15,6 +15,11 @@
                 <scm:SortDescription PropertyName="Name" />
             </CollectionViewSource.SortDescriptions>
         </CollectionViewSource>
+        <CollectionViewSource x:Key="keyParams" x:Name="keyParamsCollection" Source="{Binding Path=Parameters, ElementName=selectedRecord, Mode=TwoWay, BindsDirectlyToSource=False}" >
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Name" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
     </UserControl.Resources>
     <Grid>
         <DockPanel LastChildFill="False">
@@ -41,14 +46,20 @@
                 </ListBox>
             </StackPanel>
             <StackPanel Orientation="Vertical">
-                <DockPanel Margin="5 25 0 5"  Width="610" HorizontalAlignment="Left">
-                    <TextBlock Text="Parameters:" Foreground="{StaticResource LightDarkTextBrush}" DockPanel.Dock="Left" VerticalAlignment="Bottom" />
+                <DockPanel Margin="5 30 0 5"  Width="610" HorizontalAlignment="Left">
+                    <TextBlock Text="Key path:" Foreground="{StaticResource LightDarkTextBrush}" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="5"/>
+                    <TextBox x:Name="registryKeyPathTextbox" Height="20" Width="536" HorizontalAlignment="Left" Margin="10 0 0 0" Text="{Binding KeyPath, Mode=TwoWay}" Style="{StaticResource DarkTextbox}" TextChanged="registryKeyPathTextbox_TextChanged"/>
+                </DockPanel>
+                <DockPanel Margin="5 10 0 5"  Width="610" HorizontalAlignment="Left">
+                    <TextBlock Text="Parameters:" Foreground="{StaticResource LightDarkTextBrush}" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="5"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Left" Margin="10 0">
+                        <Button x:Name="addRegKeyValue" Style="{StaticResource NoBorderMenuDarkButtonSmall}" Content="Add" Click="AddRegistryKeyValue"></Button>
+                        <Button x:Name="removeRegKeyValue" Style="{StaticResource NoBorderMenuDarkButtonSmall}" Content="Remove" Click="RemoveRegistryKeyValue"></Button>
+                    </StackPanel>
                     <Button x:Name="ApplyRegistryValuesButton" Content="Apply" Style="{StaticResource NoBorderMenuDarkButton}" HorizontalAlignment="Right" DockPanel.Dock="Right" Padding="5"></Button>
                 </DockPanel>
-                <ListView x:Name="registryKeysList" Style="{StaticResource DarkListBox}" Margin="5" Width="620" UseLayoutRounding="False" ItemContainerStyle="{StaticResource DarkListViewItem}">
-                    <ListBox.DataContext>
-                        <local1:RMValue/>
-                    </ListBox.DataContext>
+                <ListView x:Name="registryKeysList" Style="{StaticResource DarkListBox}" Margin="5" Width="620" UseLayoutRounding="False" ItemContainerStyle="{StaticResource DarkListViewItem}"
+                          ItemsSource="{Binding Source={StaticResource keyParams}}" >
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="200"/>

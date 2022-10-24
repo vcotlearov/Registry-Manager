@@ -8,20 +8,25 @@ namespace Registry_Manager.UI
     public partial class ManageRegistryKey : Window
     {
         public static string RegKeyName { get; set; }
+        public static int ActionFlag { get; set; }
         public ManageRegistryKey()
         {
             InitializeComponent();
             DataContext = this;
+            ActionFlag = -1;
         }
 
         private void btnSaveData_Click(object sender, RoutedEventArgs e)
         {
             RegKeyName = RegKeyTextbox.Text;
+            ActionFlag = 1;
             this.Close();
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
+            RegKeyName = string.Empty;
+            ActionFlag = -1;
             this.Close();
         }
 

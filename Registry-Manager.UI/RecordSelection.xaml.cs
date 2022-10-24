@@ -13,7 +13,10 @@ namespace Registry_Manager.UI
     public partial class RecordSelection : UserControl
     {
         public ObservableCollection<RMKey> RegistryRecords { get; set; }
-        public RMKey selectedRecord;
+        public RMKey selectedRecord { get; set; }
+        public string KeyPath { get; set; }
+        public RMGroup rmGroup { get; set; }
+
         public RecordSelection()
         {
             InitializeComponent();
@@ -22,13 +25,15 @@ namespace Registry_Manager.UI
             RegistryRecords = new ObservableCollection<RMKey>();
         }
 
-        public void Populate(ObservableCollection<RMKey> records)
+        public void Populate(RMGroup rmGroup)
         {
-            RegistryRecords = records;
-            if (records.Count > 0)
+            RegistryRecords = rmGroup.Records;
+            KeyPath = rmGroup.KeyPath;
+            if (rmGroup.Records.Count > 0)
             {
-                registryKeysList.SelectedItem = records[0];
+                registryKeysList.SelectedItem = rmGroup.Records[0];
             }
+            this.rmGroup = rmGroup;
         }
 
         private void recordsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -48,10 +53,11 @@ namespace Registry_Manager.UI
             modalWindow.Top = modalWindow.Owner.Top + modalWindow.Owner.Height / 2;
             modalWindow.ShowDialog();
 
-            string valueFromModalTextBox = ManageRegistryKey.RegKeyName;
+            var valueFromModalTextBox = ManageRegistryKey.RegKeyName;
+            var actionFlag = ManageRegistryKey.ActionFlag;
 
             var rmKey = RegistryRecords.SingleOrDefault(x => x.Name == valueFromModalTextBox);
-            if (rmKey == null && !string.IsNullOrEmpty(valueFromModalTextBox))
+            if (rmKey == null && actionFlag == 1 && !string.IsNullOrEmpty(valueFromModalTextBox))
             {
                 RegistryRecords.Add(new RMKey() { Name = valueFromModalTextBox });
                 ManageRegistryKey.RegKeyName = string.Empty;
@@ -88,6 +94,48 @@ namespace Registry_Manager.UI
                 {
                     rmKey.Name = valueFromModalTextBox;
                 }
+            }
+        }
+
+        private void AddRegistryKeyValue(object sender, RoutedEventArgs e)
+        {
+            if(selectedRecord == null)
+            {
+                return;
+            }
+            var modalWindow = new ManageRegistryKeyValueWindow();
+            modalWindow.Owner = Application.Current.MainWindow;
+            modalWindow.Left = modalWindow.Owner.Left + modalWindow.Owner.Width / 3;
+            modalWindow.Top = modalWindow.Owner.Top + modalWindow.Owner.Height / 3;
+            modalWindow.ShowDialog();
+
+            string registryKeyName = ManageRegistryKeyValueWindow.RegistryKeyName;
+            string registryKeyType = ManageRegistryKeyValueWindow.RegistryKeyType;
+            string registryKeyValue = ManageRegistryKeyValueWindow.RegistryKeyValue;
+
+            var rmKey = selectedRecord.Parameters.SingleOrDefault(x => x.Name == registryKeyName);
+            if (rmKey == null && !string.IsNullOrEmpty(registryKeyName))
+            {
+                selectedRecord.Parameters.Add(new RMValue() { Name = registryKeyName, Type = registryKeyType, Data= registryKeyValue });
+                ManageRegistryKeyValueWindow.RegistryKeyName = string.Empty;
+                ManageRegistryKeyValueWindow.RegistryKeyType = string.Empty;
+                ManageRegistryKeyValueWindow.RegistryKeyValue = string.Empty;
+            }
+        }
+
+        private void RemoveRegistryKeyValue(object sender, RoutedEventArgs e)
+        {
+            if (registryKeysList.SelectedItem is RMValue keyValue)
+            {
+                selectedRecord.Parameters.Remove(keyValue);
+            }
+        }
+
+        private void registryKeyPathTextbox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if(!string.IsNullOrEmpty(registryKeyPathTextbox.Text))
+            {
+                rmGroup.KeyPath = registryKeyPathTextbox.Text;
             }
         }
     }

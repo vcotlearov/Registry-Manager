@@ -24,6 +24,23 @@ namespace Registry_Manager.UI.Models
             }
         }
 
+        private string _keyPath;
+        public string KeyPath
+        {
+            get
+            {
+                return this._keyPath;
+            }
+            set
+            {
+                if (value != this._keyPath)
+                {
+                    this._keyPath = value;
+                    NotifyPropertyChanged("KeyPath");
+                }
+            }
+        }
+
         public ObservableCollection<RMKey> Records { get; set; }
 
         public RMGroup()

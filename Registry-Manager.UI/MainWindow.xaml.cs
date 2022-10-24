@@ -100,7 +100,7 @@ namespace Registry_Manager.UI
                 tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
                 RecordSelection recordSelection = new RecordSelection();
-                recordSelection.Populate(group.Records);
+                recordSelection.Populate(group);
                 tab.Content = recordSelection;
                 // insert tab item right before the last (+) tab item
                 _tabItems.Insert(count - 1, tab);

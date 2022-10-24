@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace Registry_Manager.UI.Models
@@ -38,14 +39,14 @@ namespace Registry_Manager.UI.Models
                 }
             }
         }
-        public List<RMValue> Parameters { get; set; }
+        public ObservableCollection<RMValue> Parameters { get; set; }
 
         public RMKey()
         {
-            Parameters = new List<RMValue>();
+            Parameters = new ObservableCollection<RMValue>();
         }
 
-        protected void NotifyPropertyChanged(String propertyName)
+        protected void NotifyPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
