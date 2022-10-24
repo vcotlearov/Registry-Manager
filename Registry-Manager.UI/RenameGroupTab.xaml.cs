@@ -34,5 +34,18 @@ namespace Registry_Manager.UI
         {
             this.Close();
         }
+
+        private void inputTextbox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(groupName))
+            {
+                groupNameTextbox.CaretIndex = groupName.Length;
+            }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            groupNameTextbox.Focus();
+        }
     }
 }

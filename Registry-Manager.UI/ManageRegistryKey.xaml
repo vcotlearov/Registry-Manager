@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Registry_Manager.UI"
         mc:Ignorable="d"
-        Title="ManageRegistryKey" Height="130" Width="250" WindowStyle="None" ResizeMode="NoResize" BorderThickness="1" BorderBrush="{StaticResource LightBlueBrush}" Foreground="{StaticResource WhiteBrush}" Background="{StaticResource MenuDarkBrush}">
+        Title="ManageRegistryKey" Height="130" Width="250" WindowStyle="None" ResizeMode="NoResize" BorderThickness="1" BorderBrush="{StaticResource LightBlueBrush}" Foreground="{StaticResource WhiteBrush}" Background="{StaticResource MenuDarkBrush}" Loaded="Window_Loaded">
     <Grid>
         <DockPanel>
             <DockPanel DockPanel.Dock="Top" Margin="10 20 10 0">
                 <Label Name="txtSomeBox" DockPanel.Dock="Top" HorizontalAlignment="Left"  Style="{StaticResource MenuDarkLabelWithDarkText}">Key name:</Label>
-                <TextBox Name="RegKeyTextbox" DockPanel.Dock="Right" Width="220" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5 0 0 0" Style="{StaticResource DarkTextbox}" Text="{Binding RegKeyName, Mode=TwoWay}"/>
+                <TextBox Name="RegKeyTextbox" DockPanel.Dock="Right" Width="220" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5 0 0 0" Style="{StaticResource DarkTextbox}" Text="{Binding RegKeyName, Mode=TwoWay}" GotFocus="inputTextbox_GotFocus"/>
             </DockPanel>
             <StackPanel DockPanel.Dock="Left" Height="30" Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Name="btnSaveData" Click="btnSaveData_Click" Content="Save" Style="{StaticResource NoBorderMenuDarkButton}"/>
