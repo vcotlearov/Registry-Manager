@@ -1,4 +1,7 @@
-﻿using Registry_Manager.UI.Models;
+﻿using Microsoft.Win32;
+using Registry_Manager.UI.Models;
+using Registry_Manager.UI.Windows.MessageBox;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -177,6 +180,29 @@ namespace Registry_Manager.UI
             if(!string.IsNullOrEmpty(registryKeyPathTextbox.Text))
             {
                 rmGroup.KeyPath = registryKeyPathTextbox.Text;
+            }
+        }
+
+        private void ApplyRegistryValuesButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (selectedRecord != null)
+                {
+                    foreach (var value in selectedRecord.Parameters)
+                    {
+                        Registry.SetValue(rmGroup.KeyPath, value.Name, value.Data, RegistryValueKind.String);
+                    }
+                    DarkMesssageBox darkMesssageBox = new DarkMesssageBox();
+                    darkMesssageBox.Owner = Application.Current.MainWindow;
+                    darkMesssageBox.Left = darkMesssageBox.Owner.Left + darkMesssageBox.Owner.Width / 3;
+                    darkMesssageBox.Top = darkMesssageBox.Owner.Top + darkMesssageBox.Owner.Height / 3;
+                    darkMesssageBox.ShowDialog();
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show($"Something went wrong: {ex.Message}");
             }
         }
     }

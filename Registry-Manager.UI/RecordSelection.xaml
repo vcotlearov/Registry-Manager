@@ -56,7 +56,7 @@
                         <Button x:Name="addRegKeyValue" Style="{StaticResource NoBorderMenuDarkButtonSmall}" Content="Add" Click="AddRegistryKeyValue"></Button>
                         <Button x:Name="removeRegKeyValue" Style="{StaticResource NoBorderMenuDarkButtonSmall}" Content="Remove" Click="RemoveRegistryKeyValue"></Button>
                     </StackPanel>
-                    <Button x:Name="ApplyRegistryValuesButton" Content="Apply" Style="{StaticResource NoBorderMenuDarkButton}" HorizontalAlignment="Right" DockPanel.Dock="Right" Padding="5"></Button>
+                    <Button x:Name="ApplyRegistryValuesButton" Content="Apply" Style="{StaticResource NoBorderMenuDarkButton}" HorizontalAlignment="Right" DockPanel.Dock="Right" Padding="5" Click="ApplyRegistryValuesButton_Click"></Button>
                 </DockPanel>
                 <ListView x:Name="registryKeysList" Style="{StaticResource DarkListBox}" Margin="5" Width="620" UseLayoutRounding="False" ItemContainerStyle="{StaticResource DarkListViewItem}"
                           ItemsSource="{Binding Source={StaticResource keyParams}}" >
