@@ -67,6 +67,11 @@
                             <GridViewColumn Header="Data" DisplayMemberBinding="{Binding Data}" Width="300"/>
                         </GridView>
                     </ListView.View>
+                    <ListView.ContextMenu>
+                        <ContextMenu Placement="Right" StaysOpen="true" Padding="0" Margin="0" BorderThickness="0">
+                            <MenuItem Padding="0" Margin="0" Header="Update" Click="UpdateRegistryKeyValue" Style="{StaticResource DarkMenuItem}"/>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
                 </ListView>
             </StackPanel>
         </DockPanel>

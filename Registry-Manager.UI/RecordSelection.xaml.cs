@@ -123,6 +123,47 @@ namespace Registry_Manager.UI
             }
         }
 
+        private void UpdateRegistryKeyValue(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem item)
+            {
+                var contextMenu = item.Parent as ContextMenu;
+                var listView = contextMenu.PlacementTarget as ListView;
+
+                if (listView.SelectedItem is RMValue rmValue)
+                {
+                    var modalWindow = new ManageRegistryKeyValueWindow();
+                    modalWindow.Owner = Application.Current.MainWindow;
+                    modalWindow.Left = modalWindow.Owner.Left + modalWindow.Owner.Width / 3;
+                    modalWindow.Top = modalWindow.Owner.Top + modalWindow.Owner.Height / 3;
+
+                    ManageRegistryKeyValueWindow.RegistryKeyName = rmValue.Name;
+                    ManageRegistryKeyValueWindow.RegistryKeyType = rmValue.Type;
+                    ManageRegistryKeyValueWindow.RegistryKeyValue = rmValue.Data;
+                    modalWindow.ShowDialog();
+
+                    if(ManageRegistryKeyValueWindow.ActionFlag == 1)
+                    {
+                        string registryKeyName = ManageRegistryKeyValueWindow.RegistryKeyName;
+                        string registryKeyType = ManageRegistryKeyValueWindow.RegistryKeyType;
+                        string registryKeyValue = ManageRegistryKeyValueWindow.RegistryKeyValue;
+
+                        var rmKeyValue = selectedRecord.Parameters.SingleOrDefault(x => x.Name == rmValue.Name && x.Data == rmValue.Data);
+                        if (rmKeyValue != null && !string.IsNullOrEmpty(registryKeyName))
+                        {
+                            rmKeyValue.Name = registryKeyName;
+                            rmKeyValue.Data = registryKeyValue;
+
+                            ManageRegistryKeyValueWindow.RegistryKeyName = string.Empty;
+                            ManageRegistryKeyValueWindow.RegistryKeyType = string.Empty;
+                            ManageRegistryKeyValueWindow.RegistryKeyValue = string.Empty;
+                        }
+                    }
+                    
+                }
+            }
+        }
+
         private void RemoveRegistryKeyValue(object sender, RoutedEventArgs e)
         {
             if (registryKeysList.SelectedItem is RMValue keyValue)

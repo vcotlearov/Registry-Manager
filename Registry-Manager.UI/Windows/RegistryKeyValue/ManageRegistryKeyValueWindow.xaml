@@ -14,11 +14,11 @@
             </DockPanel>
             <DockPanel DockPanel.Dock="Top" Margin="10 20 10 0">
                 <Label Name="registryKeyValueTypeLabel" DockPanel.Dock="Top" HorizontalAlignment="Left"  Style="{StaticResource MenuDarkLabelWithDarkText}">Type:</Label>
-                <TextBox Name="registryKeyValueTypeTextbox" DockPanel.Dock="Right" Width="220" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5 0 0 0" Style="{StaticResource DarkTextbox}" Text="REG_SZ"/>
+                <TextBox Name="registryKeyValueTypeTextbox" DockPanel.Dock="Right" Width="220" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5 0 0 0" Style="{StaticResource DarkTextbox}" Text="REG_SZ" IsReadOnly="True"/>
             </DockPanel>
             <DockPanel DockPanel.Dock="Top" Margin="10 20 10 0">
                 <Label Name="registryKeyValueDataLabel" DockPanel.Dock="Top" HorizontalAlignment="Left"  Style="{StaticResource MenuDarkLabelWithDarkText}">Value:</Label>
-                <TextBox Name="registryKeyValueDataTextbox" DockPanel.Dock="Right" Width="220" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5 0 0 0" Style="{StaticResource DarkTextbox}" Text="{Binding RegistryKeyValue, Mode=TwoWay}"/>
+                <TextBox Name="registryKeyValueDataTextbox" DockPanel.Dock="Right" Width="220" Height="20" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5 0 0 0" Style="{StaticResource DarkTextbox}" Text="{Binding RegistryKeyValue, Mode=TwoWay}" GotFocus="registryKeyValueDataTextbox_GotFocus"/>
             </DockPanel>
             <StackPanel DockPanel.Dock="Left" Height="30" Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Name="btnSaveData" Click="btnSaveData_Click" Content="Save" Style="{StaticResource NoBorderMenuDarkButton}"/>
