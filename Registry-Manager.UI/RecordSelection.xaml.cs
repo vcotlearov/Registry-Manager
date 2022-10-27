@@ -132,38 +132,42 @@ namespace Registry_Manager.UI
             {
                 var contextMenu = item.Parent as ContextMenu;
                 var listView = contextMenu.PlacementTarget as ListView;
+                HandleKeyValueUpdate(listView);
+            }
+        }
 
-                if (listView.SelectedItem is RMValue rmValue)
+        private void HandleKeyValueUpdate(ListView listView)
+        {
+            if (listView.SelectedItem is RMValue rmValue)
+            {
+                var modalWindow = new ManageRegistryKeyValueWindow();
+                modalWindow.Owner = Application.Current.MainWindow;
+                modalWindow.Left = modalWindow.Owner.Left + modalWindow.Owner.Width / 3;
+                modalWindow.Top = modalWindow.Owner.Top + modalWindow.Owner.Height / 3;
+
+                ManageRegistryKeyValueWindow.RegistryKeyName = rmValue.Name;
+                ManageRegistryKeyValueWindow.RegistryKeyType = rmValue.Type;
+                ManageRegistryKeyValueWindow.RegistryKeyValue = rmValue.Data;
+                modalWindow.ShowDialog();
+
+                if (ManageRegistryKeyValueWindow.ActionFlag == 1)
                 {
-                    var modalWindow = new ManageRegistryKeyValueWindow();
-                    modalWindow.Owner = Application.Current.MainWindow;
-                    modalWindow.Left = modalWindow.Owner.Left + modalWindow.Owner.Width / 3;
-                    modalWindow.Top = modalWindow.Owner.Top + modalWindow.Owner.Height / 3;
+                    string registryKeyName = ManageRegistryKeyValueWindow.RegistryKeyName;
+                    string registryKeyType = ManageRegistryKeyValueWindow.RegistryKeyType;
+                    string registryKeyValue = ManageRegistryKeyValueWindow.RegistryKeyValue;
 
-                    ManageRegistryKeyValueWindow.RegistryKeyName = rmValue.Name;
-                    ManageRegistryKeyValueWindow.RegistryKeyType = rmValue.Type;
-                    ManageRegistryKeyValueWindow.RegistryKeyValue = rmValue.Data;
-                    modalWindow.ShowDialog();
-
-                    if(ManageRegistryKeyValueWindow.ActionFlag == 1)
+                    var rmKeyValue = selectedRecord.Parameters.SingleOrDefault(x => x.Name == rmValue.Name && x.Data == rmValue.Data);
+                    if (rmKeyValue != null && !string.IsNullOrEmpty(registryKeyName))
                     {
-                        string registryKeyName = ManageRegistryKeyValueWindow.RegistryKeyName;
-                        string registryKeyType = ManageRegistryKeyValueWindow.RegistryKeyType;
-                        string registryKeyValue = ManageRegistryKeyValueWindow.RegistryKeyValue;
+                        rmKeyValue.Name = registryKeyName;
+                        rmKeyValue.Data = registryKeyValue;
 
-                        var rmKeyValue = selectedRecord.Parameters.SingleOrDefault(x => x.Name == rmValue.Name && x.Data == rmValue.Data);
-                        if (rmKeyValue != null && !string.IsNullOrEmpty(registryKeyName))
-                        {
-                            rmKeyValue.Name = registryKeyName;
-                            rmKeyValue.Data = registryKeyValue;
-
-                            ManageRegistryKeyValueWindow.RegistryKeyName = string.Empty;
-                            ManageRegistryKeyValueWindow.RegistryKeyType = string.Empty;
-                            ManageRegistryKeyValueWindow.RegistryKeyValue = string.Empty;
-                        }
+                        ManageRegistryKeyValueWindow.RegistryKeyName = string.Empty;
+                        ManageRegistryKeyValueWindow.RegistryKeyType = string.Empty;
+                        ManageRegistryKeyValueWindow.RegistryKeyValue = string.Empty;
                     }
-                    
                 }
+
             }
         }
 
@@ -194,6 +198,7 @@ namespace Registry_Manager.UI
                         Registry.SetValue(rmGroup.KeyPath, value.Name, value.Data, RegistryValueKind.String);
                     }
                     DarkMesssageBox darkMesssageBox = new DarkMesssageBox();
+                    darkMesssageBox.Text = "Registry settings were applied";
                     darkMesssageBox.Owner = Application.Current.MainWindow;
                     darkMesssageBox.Left = darkMesssageBox.Owner.Left + darkMesssageBox.Owner.Width / 3;
                     darkMesssageBox.Top = darkMesssageBox.Owner.Top + darkMesssageBox.Owner.Height / 3;
@@ -203,6 +208,42 @@ namespace Registry_Manager.UI
             catch(Exception ex)
             {
                 MessageBox.Show($"Something went wrong: {ex.Message}");
+            }
+        }
+
+        private void TextBlock_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if(e.Key == System.Windows.Input.Key.F2)
+            {
+                if (sender is ListBox listBox && listBox.SelectedItem is RMKey key)
+                {
+                    RenameRegistryKeyWindow modalWindow = new RenameRegistryKeyWindow();
+                    modalWindow.Owner = Application.Current.MainWindow;
+                    modalWindow.Left = modalWindow.Owner.Left + modalWindow.Owner.Width / 3;
+                    modalWindow.Top = modalWindow.Owner.Top + modalWindow.Owner.Height / 2;
+                    RenameRegistryKeyWindow.RegistryKey = key.Name;
+                    modalWindow.ShowDialog();
+
+                    string valueFromModalTextBox = RenameRegistryKeyWindow.RegistryKey;
+
+                    var groupTitle = key.Name;
+                    var rmKey = RegistryRecords.SingleOrDefault(x => x.Name == groupTitle);
+                    if (rmKey != null && !string.IsNullOrEmpty(valueFromModalTextBox))
+                    {
+                        rmKey.Name = valueFromModalTextBox;
+                    }
+                }
+            }
+        }
+
+        private void registryKeysList_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.F2)
+            {
+                if (sender is ListView listView)
+                {
+                    HandleKeyValueUpdate(listView);
+                }
             }
         }
     }

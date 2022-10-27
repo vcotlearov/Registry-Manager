@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 
 namespace Registry_Manager.UI
 {
@@ -37,6 +38,14 @@ namespace Registry_Manager.UI
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             inputTextbox.Focus();
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                this.Close();
+            }
         }
     }
 }

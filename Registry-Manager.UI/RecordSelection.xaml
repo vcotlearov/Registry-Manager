@@ -31,13 +31,14 @@
                         <Button x:Name="removeRecord" Style="{StaticResource NoBorderMenuDarkButtonSmall}" Content="Remove" Margin="0 5" Click="RemoveRegistryKey"></Button>
                     </StackPanel>
                 </DockPanel>
-                <ListBox x:Name="recordsList" Style="{StaticResource DarkListBox}"  ItemsSource="{Binding Source={StaticResource src}}" BorderThickness="0 2 2 0" Width="200" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="340" SelectionChanged="recordsList_SelectionChanged">
+                <ListBox x:Name="recordsList" Style="{StaticResource DarkListBox}"  ItemsSource="{Binding Source={StaticResource src}}" BorderThickness="0 2 2 0" Width="200" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" Height="340" 
+                         SelectionChanged="recordsList_SelectionChanged" KeyDown="TextBlock_KeyDown">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text ="{Binding Name, Mode=TwoWay}">
                                 <TextBlock.ContextMenu>
                                     <ContextMenu Placement="Right" StaysOpen="true" Padding="0" Margin="0" BorderThickness="0">
-                                        <MenuItem Padding="0" Margin="0" Header="Rename" Click="RenameRegistryKey" Style="{StaticResource DarkMenuItem}"/>
+                                        <MenuItem Padding="0" Margin="0" Header="Rename" Click="RenameRegistryKey"  Style="{StaticResource DarkMenuItem}"/>
                                     </ContextMenu>
                                 </TextBlock.ContextMenu>
                             </TextBlock>
@@ -59,7 +60,7 @@
                     <Button x:Name="ApplyRegistryValuesButton" Content="Apply" Style="{StaticResource NoBorderMenuDarkButton}" HorizontalAlignment="Right" DockPanel.Dock="Right" Padding="5" Click="ApplyRegistryValuesButton_Click"></Button>
                 </DockPanel>
                 <ListView x:Name="registryKeysList" Style="{StaticResource DarkListBox}" Margin="5" Width="620" UseLayoutRounding="False" ItemContainerStyle="{StaticResource DarkListViewItem}"
-                          ItemsSource="{Binding Source={StaticResource keyParams}}" >
+                          ItemsSource="{Binding Source={StaticResource keyParams}}" KeyDown="registryKeysList_KeyDown"  >
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="200"/>

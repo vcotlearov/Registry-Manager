@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Input;
 
 namespace Registry_Manager.UI
 {
@@ -25,9 +26,7 @@ namespace Registry_Manager.UI
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            RegKeyName = string.Empty;
-            ActionFlag = -1;
-            this.Close();
+            CancelAndCloseAction();
         }
 
         private void inputTextbox_GotFocus(object sender, RoutedEventArgs e)
@@ -41,6 +40,21 @@ namespace Registry_Manager.UI
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             RegKeyTextbox.Focus();
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                CancelAndCloseAction();
+            }
+        }
+
+        private void CancelAndCloseAction()
+        {
+            RegKeyName = string.Empty;
+            ActionFlag = -1;
+            this.Close();
         }
     }
 }

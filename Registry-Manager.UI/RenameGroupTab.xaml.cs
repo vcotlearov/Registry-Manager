@@ -47,5 +47,13 @@ namespace Registry_Manager.UI
         {
             groupNameTextbox.Focus();
         }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Escape)
+            {
+                this.Close();
+            }
+        }
     }
 }

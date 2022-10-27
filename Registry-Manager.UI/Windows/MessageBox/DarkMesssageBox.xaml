@@ -9,7 +9,7 @@
     <Grid>
         <DockPanel>
             <DockPanel DockPanel.Dock="Top" Margin="10 20 10 0">
-                <Label Name="txtSomeBox" DockPanel.Dock="Top" HorizontalAlignment="Center"  Style="{StaticResource MenuDarkLabelWithDarkText}" Foreground="Gold">Registry settings were applied</Label>
+                <Label Name="txtSomeBox" DockPanel.Dock="Top" HorizontalAlignment="Center"  Style="{StaticResource MenuDarkLabelWithDarkText}" Content="{Binding Text, Mode=TwoWay}" Foreground="Gold"></Label>
             </DockPanel>
             <StackPanel DockPanel.Dock="Left" Height="30" Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Name="btnConfirm" Click="btnConfirm_Click" Content="OK" Style="{StaticResource NoBorderMenuDarkButton}"/>

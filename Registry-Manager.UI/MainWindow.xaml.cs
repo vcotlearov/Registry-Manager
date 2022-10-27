@@ -9,6 +9,7 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Windows.Media;
 using System.Windows.Input;
+using Registry_Manager.UI.Windows.MessageBox;
 
 namespace Registry_Manager.UI
 {
@@ -45,6 +46,7 @@ namespace Registry_Manager.UI
         private string addTabHeader =  "+";
 
         public static RMConfig rmConfig;
+        private static string _loadedFilePath = string.Empty;
 
         public MainWindow()
         {
@@ -211,25 +213,6 @@ namespace Registry_Manager.UI
             }
         }
 
-     
-
-        private void NewConfig_Click(object sender, RoutedEventArgs e)
-        {
-            InitializeDefaultConfig();
-        }
-        private void OpenConfig_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "JSON file (*.json)|*.json";
-            if (openFileDialog.ShowDialog() == true)
-            {
-                var jsonConfig = File.ReadAllText(openFileDialog.FileName);
-                var config = JsonConvert.DeserializeObject<RMConfig>(jsonConfig);
-
-                ImportConfig(config);
-            }
-        }
-
         private void ImportConfig(RMConfig config)
         {
             _tabItems = new List<TabItem>();
@@ -254,14 +237,51 @@ namespace Registry_Manager.UI
             
         }
 
-        private void SaveAsConfig_Click(object sender, RoutedEventArgs e)
+      
+
+        #region Actions
+        private void OpenAction()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "JSON file (*.json)|*.json";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                _loadedFilePath = openFileDialog.FileName;
+                var jsonConfig = File.ReadAllText(openFileDialog.FileName);
+                var config = JsonConvert.DeserializeObject<RMConfig>(jsonConfig);
+
+                ImportConfig(config);
+            }
+        }
+
+        private static void SaveAsAction()
         {
             var jsonConfig = JsonConvert.SerializeObject(rmConfig, Formatting.Indented);
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "JSON file (*.json)|*.json";
             if (saveFileDialog.ShowDialog() == true)
+            {
+                _loadedFilePath = saveFileDialog.FileName;
                 File.WriteAllText(saveFileDialog.FileName, jsonConfig);
+            }
+        }
+        #endregion
+
+
+        #region Events
+        private void NewConfig_Click(object sender, RoutedEventArgs e)
+        {
+            InitializeDefaultConfig();
+        }
+        private void OpenConfig_Click(object sender, RoutedEventArgs e)
+        {
+            OpenAction();
+        }
+
+        private void SaveAsConfig_Click(object sender, RoutedEventArgs e)
+        {
+            SaveAsAction();
         }
 
         private void OnExit_Click(object sender, RoutedEventArgs e)
@@ -274,5 +294,38 @@ namespace Registry_Manager.UI
             if (e.ChangedButton == MouseButton.Left)
                 this.DragMove();
         }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                if (string.IsNullOrEmpty(_loadedFilePath))
+                {
+                    SaveAsAction();
+                    return;
+                }
+                var jsonConfig = JsonConvert.SerializeObject(rmConfig, Formatting.Indented);
+                File.WriteAllText(_loadedFilePath, jsonConfig);
+
+                DarkMesssageBox darkMesssageBox = new DarkMesssageBox();
+                darkMesssageBox.Text = "Configuration is saved";
+                darkMesssageBox.Owner = Application.Current.MainWindow;
+                darkMesssageBox.Left = darkMesssageBox.Owner.Left + darkMesssageBox.Owner.Width / 3;
+                darkMesssageBox.Top = darkMesssageBox.Owner.Top + darkMesssageBox.Owner.Height / 3;
+                darkMesssageBox.ShowDialog();
+            }
+
+            if (e.Key == Key.O && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                OpenAction();
+                return;
+            }
+            if (e.Key == Key.N && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                InitializeDefaultConfig();
+                return;
+            }
+        } 
+        #endregion
     }
 }

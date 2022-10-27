@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Registry_Manager.UI"
         mc:Ignorable="d"
-        Title="ManageRegistryKey" Height="130" Width="250" WindowStyle="None" ResizeMode="NoResize" BorderThickness="1" BorderBrush="{StaticResource LightBlueBrush}" Foreground="{StaticResource WhiteBrush}" Background="{StaticResource MenuDarkBrush}" Loaded="Window_Loaded">
+        Title="ManageRegistryKey" Height="130" Width="250" WindowStyle="None" ResizeMode="NoResize" BorderThickness="1" BorderBrush="{StaticResource LightBlueBrush}" Foreground="{StaticResource WhiteBrush}" Background="{StaticResource MenuDarkBrush}" Loaded="Window_Loaded" KeyDown="Window_KeyDown">
     <Grid>
         <DockPanel>
             <DockPanel DockPanel.Dock="Top" Margin="10 20 10 0">

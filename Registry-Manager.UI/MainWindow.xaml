@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Registry_Manager.UI"
         mc:Ignorable="d"
         MouseDown="Window_MouseDown" 
-        Title="Registry Manager" Height="500" Width="900" ResizeMode="CanMinimize" Style="{StaticResource DarkWindow}">
+        Title="Registry Manager" Height="500" Width="900" ResizeMode="CanMinimize" Style="{StaticResource DarkWindow}" KeyDown="Window_KeyDown">
     <Grid>
         <DockPanel LastChildFill="False" >
             <Menu DockPanel.Dock="Top"  Style="{StaticResource DarkMenu}" Width="auto" HorizontalAlignment="Left">
